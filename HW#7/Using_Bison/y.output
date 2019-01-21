@@ -1,0 +1,244 @@
+Grammar
+
+    0 $accept: Line $end
+
+    1 Line: Exp
+
+    2 Exp: Exp '+' Term
+    3    | Exp '-' Term
+    4    | '-' Exp
+    5    | Term
+
+    6 Term: Term '*' Factor
+    7     | Term '/' Factor
+    8     | Factor
+
+    9 Factor: '(' Exp ')'
+   10       | NUMBER
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+'(' (40) 9
+')' (41) 9
+'*' (42) 6
+'+' (43) 2
+'-' (45) 3 4
+'/' (47) 7
+error (256)
+NUMBER (258) 10
+UMINUS (259)
+
+
+Nonterminals, with rules where they appear
+
+$accept (11)
+    on left: 0
+Line (12)
+    on left: 1, on right: 0
+Exp (13)
+    on left: 2 3 4 5, on right: 1 2 3 4 9
+Term (14)
+    on left: 6 7 8, on right: 2 3 5 6 7
+Factor (15)
+    on left: 9 10, on right: 6 7 8
+
+
+state 0
+
+    0 $accept: . Line $end
+
+    NUMBER  shift, and go to state 1
+    '-'     shift, and go to state 2
+    '('     shift, and go to state 3
+
+    Line    go to state 4
+    Exp     go to state 5
+    Term    go to state 6
+    Factor  go to state 7
+
+
+state 1
+
+   10 Factor: NUMBER .
+
+    $default  reduce using rule 10 (Factor)
+
+
+state 2
+
+    4 Exp: '-' . Exp
+
+    NUMBER  shift, and go to state 1
+    '-'     shift, and go to state 2
+    '('     shift, and go to state 3
+
+    Exp     go to state 8
+    Term    go to state 6
+    Factor  go to state 7
+
+
+state 3
+
+    9 Factor: '(' . Exp ')'
+
+    NUMBER  shift, and go to state 1
+    '-'     shift, and go to state 2
+    '('     shift, and go to state 3
+
+    Exp     go to state 9
+    Term    go to state 6
+    Factor  go to state 7
+
+
+state 4
+
+    0 $accept: Line . $end
+
+    $end  shift, and go to state 10
+
+
+state 5
+
+    1 Line: Exp .
+    2 Exp: Exp . '+' Term
+    3    | Exp . '-' Term
+
+    '+'  shift, and go to state 11
+    '-'  shift, and go to state 12
+
+    $default  reduce using rule 1 (Line)
+
+
+state 6
+
+    5 Exp: Term .
+    6 Term: Term . '*' Factor
+    7     | Term . '/' Factor
+
+    '*'  shift, and go to state 13
+    '/'  shift, and go to state 14
+
+    $default  reduce using rule 5 (Exp)
+
+
+state 7
+
+    8 Term: Factor .
+
+    $default  reduce using rule 8 (Term)
+
+
+state 8
+
+    2 Exp: Exp . '+' Term
+    3    | Exp . '-' Term
+    4    | '-' Exp .
+
+    $default  reduce using rule 4 (Exp)
+
+
+state 9
+
+    2 Exp: Exp . '+' Term
+    3    | Exp . '-' Term
+    9 Factor: '(' Exp . ')'
+
+    '+'  shift, and go to state 11
+    '-'  shift, and go to state 12
+    ')'  shift, and go to state 15
+
+
+state 10
+
+    0 $accept: Line $end .
+
+    $default  accept
+
+
+state 11
+
+    2 Exp: Exp '+' . Term
+
+    NUMBER  shift, and go to state 1
+    '('     shift, and go to state 3
+
+    Term    go to state 16
+    Factor  go to state 7
+
+
+state 12
+
+    3 Exp: Exp '-' . Term
+
+    NUMBER  shift, and go to state 1
+    '('     shift, and go to state 3
+
+    Term    go to state 17
+    Factor  go to state 7
+
+
+state 13
+
+    6 Term: Term '*' . Factor
+
+    NUMBER  shift, and go to state 1
+    '('     shift, and go to state 3
+
+    Factor  go to state 18
+
+
+state 14
+
+    7 Term: Term '/' . Factor
+
+    NUMBER  shift, and go to state 1
+    '('     shift, and go to state 3
+
+    Factor  go to state 19
+
+
+state 15
+
+    9 Factor: '(' Exp ')' .
+
+    $default  reduce using rule 9 (Factor)
+
+
+state 16
+
+    2 Exp: Exp '+' Term .
+    6 Term: Term . '*' Factor
+    7     | Term . '/' Factor
+
+    '*'  shift, and go to state 13
+    '/'  shift, and go to state 14
+
+    $default  reduce using rule 2 (Exp)
+
+
+state 17
+
+    3 Exp: Exp '-' Term .
+    6 Term: Term . '*' Factor
+    7     | Term . '/' Factor
+
+    '*'  shift, and go to state 13
+    '/'  shift, and go to state 14
+
+    $default  reduce using rule 3 (Exp)
+
+
+state 18
+
+    6 Term: Term '*' Factor .
+
+    $default  reduce using rule 6 (Term)
+
+
+state 19
+
+    7 Term: Term '/' Factor .
+
+    $default  reduce using rule 7 (Term)
